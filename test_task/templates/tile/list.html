@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    a {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 3px 7px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+      margin: 2px 1px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 15px;
+      text-align: left;
+    }
+
+    #task-table tr:nth-child(even) {
+      background-color: #eee;
+    }
+
+    #task-table tr:nth-child(odd) {
+      background-color: #fff;
+    }
+
+    #task-table th {
+      background-color: black;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Tiles</h2>
+  <a href="{% url 'tile-create' %}" >Add</a> 
+  <a href="{% url 'account_logout' %}" >Logout</a> 
+
+  <table id="task-table">
+    <tr>
+      <th>Id</th>
+      <th>Status</th>
+      <th>Launch Date</th>
+      <th>Tasks</th>
+      <th>Actions</th>
+    </tr>
+    {% for object in object_list %}
+    <tr>
+      <td>{{object.id}}</td>
+      <td>{{object.get_status_display}}</td>
+      <td>{{object.launch_date}}</td>
+      <td>
+        <ul >
+          {% for task in object.tasks %}
+          <li>{{task.title}}</li>
+          {% endfor %}
+        </ul>
+      </td>
+      <td><a href="{% url 'tile-update' object.id %}">Edit</a> <a href="{% url 'tile-delete' object.id %}"> Delete</a></td>
+    </tr>
+    {% endfor %}
+    </tr>
+  </table>
+</body>
+</html>

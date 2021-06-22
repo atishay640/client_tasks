@@ -157,5 +157,5 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
-LOGIN_REDIRECT_URL='/accounts/profile/'
+LOGIN_REDIRECT_URL='/app/tiles/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
