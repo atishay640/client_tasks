@@ -1,0 +1,104 @@
+{% load static %}  
+<html>
+  <head>  
+    <meta charset="UTF-8">  
+    <title>Index</title>  
+</head>  
+<link rel="stylesheet" href="{% static 'home.scss' %}">
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="{% url 'home' %}">Home</a>
+    <a href="{% url 'listcar' %}">List Car</a>    
+    {% if user.is_authenticated %}
+    <a style="padding-right: 10px;" href="{% url 'logout' %}">Logout</a> 
+    {% else %}
+    <a style="padding-right: 10px;" href="{% url 'login' %}">Login</a> 
+    {% endif %}
+    
+  </div>
+  
+  {% block content %}
+
+  <form type="get" action="." style="margin: 20">
+    <input  id="search_make" type="text" name="make"  placeholder="Make" >
+    <select  id="search_year" type="text" name="year"  placeholder="Year" ></select>
+    <button id="search_submit" type="submit" >Submit</button>
+</form>
+  
+  <!-- Car List -->
+  <div >
+    <h2>Car List</h2>
+    <p>List of available cars.</p>
+    <table>
+      {% if car_list %}
+      <tr>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Year</th>
+        <th>Price (in USD)</th>
+        <th>Action</th>
+      </tr>
+      
+      {% for car in car_list %}
+      <tr>
+        <td>{{ car.make }}</td>
+        <td>{{ car.model }}</td>
+        <td>{{ car.year }}</td>
+        <td>${{ car.price }}</td>
+        <td>{% if car.status == "A" %}
+        <a href="{% url 'buycar' car.id %}">Buy Now</a>
+        {% else %}
+        {% if user.is_authenticated %}
+        <a style="color: rgb(4, 70, 37);" href="{% url 'makeavailable' car.id %}">Make Available</a>
+        {% else %}
+        <h4 style="color: red;">Sold</h4>
+        {% endif %}
+        {% endif %}</td>
+
+      </tr>
+      {% empty %}
+      <h2 style="margin-left: 40%"> No cars available</h2>
+      {% endfor %}
+    </table>
+
+    {% if is_paginated %}
+        <div class="pagination"  style="margin: 20" >
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a href="/home?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="page-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="/home?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+    {% else %}
+    <h2 style="margin-left: 40%"> No cars available</h2>
+    {% endif %}
+  </div>
+  {% endblock %}
+</body>  
+
+<script>
+  (function () {
+    var year_start = 1970;
+    var year_end = (new Date).getFullYear(); //current year
+    var selected_year = 1992; // 0 first option
+
+    var option = '<option>year</option>';  //first option
+
+    for (var i = 0; i <= (year_end - year_start); i++) {
+        var year = (year_start+i);
+        var selected = (year == selected_year) ? ' selected' : '';
+        option += '<option value="' + year + '"'+selected+'>' + year + '</option>';
+    }
+    document.getElementById('search_year').innerHTML = option;
+})();
+</script>
+</html>
